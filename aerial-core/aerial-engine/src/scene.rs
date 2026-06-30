@@ -1,6 +1,5 @@
 /// aerial-engine/src/scene.rs
 /// Scene graph: stores all elements on the canvas.
-
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -119,7 +118,14 @@ impl SceneElement {
         }
     }
 
-    pub fn new_text(id: u64, x: f64, y: f64, text: String, size: f64, font_family: Option<String>) -> Self {
+    pub fn new_text(
+        id: u64,
+        x: f64,
+        y: f64,
+        text: String,
+        size: f64,
+        font_family: Option<String>,
+    ) -> Self {
         Self {
             id,
             kind: ElementKind::Text,
@@ -199,19 +205,23 @@ impl SceneElement {
         let threshold = (self.stroke_width / 2.0).max(4.0);
         match self.kind {
             ElementKind::Rectangle | ElementKind::Image | ElementKind::Diagram => {
-                px >= self.x - threshold && px <= self.x + self.width + threshold &&
-                py >= self.y - threshold && py <= self.y + self.height + threshold
-            },
+                px >= self.x - threshold
+                    && px <= self.x + self.width + threshold
+                    && py >= self.y - threshold
+                    && py <= self.y + self.height + threshold
+            }
             ElementKind::Ellipse => {
                 let cx = self.x + self.width / 2.0;
                 let cy = self.y + self.height / 2.0;
                 let rx = (self.width.abs() / 2.0) + threshold;
                 let ry = (self.height.abs() / 2.0) + threshold;
-                if rx <= 0.0 || ry <= 0.0 { return false; }
+                if rx <= 0.0 || ry <= 0.0 {
+                    return false;
+                }
                 let dx = px - cx;
                 let dy = py - cy;
                 (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 1.0
-            },
+            }
             ElementKind::Line | ElementKind::Arrow => {
                 // simple bounding box for line for now
                 let min_x = self.x.min(self.x + self.width) - threshold;
@@ -219,9 +229,11 @@ impl SceneElement {
                 let min_y = self.y.min(self.y + self.height) - threshold;
                 let max_y = self.y.max(self.y + self.height) + threshold;
                 px >= min_x && px <= max_x && py >= min_y && py <= max_y
-            },
+            }
             ElementKind::FreeDraw => {
-                if self.points.is_empty() { return false; }
+                if self.points.is_empty() {
+                    return false;
+                }
                 let mut min_x = self.x;
                 let mut max_x = self.x;
                 let mut min_y = self.y;
@@ -229,23 +241,35 @@ impl SceneElement {
                 for pt in &self.points {
                     let absolute_x = self.x + pt[0];
                     let absolute_y = self.y + pt[1];
-                    if absolute_x < min_x { min_x = absolute_x; }
-                    if absolute_x > max_x { max_x = absolute_x; }
-                    if absolute_y < min_y { min_y = absolute_y; }
-                    if absolute_y > max_y { max_y = absolute_y; }
+                    if absolute_x < min_x {
+                        min_x = absolute_x;
+                    }
+                    if absolute_x > max_x {
+                        max_x = absolute_x;
+                    }
+                    if absolute_y < min_y {
+                        min_y = absolute_y;
+                    }
+                    if absolute_y > max_y {
+                        max_y = absolute_y;
+                    }
                 }
-                px >= min_x - threshold && px <= max_x + threshold &&
-                py >= min_y - threshold && py <= max_y + threshold
-            },
+                px >= min_x - threshold
+                    && px <= max_x + threshold
+                    && py >= min_y - threshold
+                    && py <= max_y + threshold
+            }
             ElementKind::Text => {
                 let w = self.width.abs().max(60.0);
                 let h = self.height.abs().max(30.0);
-                px >= self.x - threshold && px <= self.x + w + threshold &&
-                py >= self.y - threshold && py <= self.y + h + threshold
-            },
+                px >= self.x - threshold
+                    && px <= self.x + w + threshold
+                    && py >= self.y - threshold
+                    && py <= self.y + h + threshold
+            }
         }
     }
-    
+
     /// Like contains() but with a custom radius for the eraser tool.
     pub fn contains_radius(&self, px: f64, py: f64, radius: f64) -> bool {
         match self.kind {
@@ -255,26 +279,30 @@ impl SceneElement {
                 let min_y = self.y.min(self.y + self.height) - radius;
                 let max_y = self.y.max(self.y + self.height) + radius;
                 px >= min_x && px <= max_x && py >= min_y && py <= max_y
-            },
+            }
             ElementKind::Ellipse => {
                 let cx = self.x + self.width / 2.0;
                 let cy = self.y + self.height / 2.0;
                 let rx = self.width.abs() / 2.0 + radius;
                 let ry = self.height.abs() / 2.0 + radius;
-                if rx <= 0.0 || ry <= 0.0 { return false; }
+                if rx <= 0.0 || ry <= 0.0 {
+                    return false;
+                }
                 let dx = px - cx;
                 let dy = py - cy;
                 (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 1.0
-            },
+            }
             ElementKind::Line | ElementKind::Arrow => {
                 let min_x = self.x.min(self.x + self.width) - radius;
                 let max_x = self.x.max(self.x + self.width) + radius;
                 let min_y = self.y.min(self.y + self.height) - radius;
                 let max_y = self.y.max(self.y + self.height) + radius;
                 px >= min_x && px <= max_x && py >= min_y && py <= max_y
-            },
+            }
             ElementKind::FreeDraw => {
-                if self.points.is_empty() { return false; }
+                if self.points.is_empty() {
+                    return false;
+                }
                 let mut min_x = self.x;
                 let mut max_x = self.x;
                 let mut min_y = self.y;
@@ -282,20 +310,32 @@ impl SceneElement {
                 for pt in &self.points {
                     let ax = self.x + pt[0];
                     let ay = self.y + pt[1];
-                    if ax < min_x { min_x = ax; }
-                    if ax > max_x { max_x = ax; }
-                    if ay < min_y { min_y = ay; }
-                    if ay > max_y { max_y = ay; }
+                    if ax < min_x {
+                        min_x = ax;
+                    }
+                    if ax > max_x {
+                        max_x = ax;
+                    }
+                    if ay < min_y {
+                        min_y = ay;
+                    }
+                    if ay > max_y {
+                        max_y = ay;
+                    }
                 }
-                px >= min_x - radius && px <= max_x + radius &&
-                py >= min_y - radius && py <= max_y + radius
-            },
+                px >= min_x - radius
+                    && px <= max_x + radius
+                    && py >= min_y - radius
+                    && py <= max_y + radius
+            }
             ElementKind::Text => {
                 let w = self.width.abs().max(60.0);
                 let h = self.height.abs().max(30.0);
-                px >= self.x - radius && px <= self.x + w + radius &&
-                py >= self.y - radius && py <= self.y + h + radius
-            },
+                px >= self.x - radius
+                    && px <= self.x + w + radius
+                    && py >= self.y - radius
+                    && py <= self.y + h + radius
+            }
         }
     }
 
@@ -307,18 +347,34 @@ impl SceneElement {
         let max_ry = ry.max(ry + rh);
 
         match self.kind {
-            ElementKind::Rectangle | ElementKind::Ellipse | ElementKind::Image | ElementKind::Diagram | ElementKind::Line | ElementKind::Arrow | ElementKind::Text => {
-                let w = if self.kind == ElementKind::Text { self.width.abs().max(60.0) } else { self.width };
-                let h = if self.kind == ElementKind::Text { self.height.abs().max(30.0) } else { self.height };
+            ElementKind::Rectangle
+            | ElementKind::Ellipse
+            | ElementKind::Image
+            | ElementKind::Diagram
+            | ElementKind::Line
+            | ElementKind::Arrow
+            | ElementKind::Text => {
+                let w = if self.kind == ElementKind::Text {
+                    self.width.abs().max(60.0)
+                } else {
+                    self.width
+                };
+                let h = if self.kind == ElementKind::Text {
+                    self.height.abs().max(30.0)
+                } else {
+                    self.height
+                };
                 let min_x = self.x.min(self.x + w);
                 let max_x = self.x.max(self.x + w);
                 let min_y = self.y.min(self.y + h);
                 let max_y = self.y.max(self.y + h);
-                
+
                 !(max_rx < min_x || min_rx > max_x || max_ry < min_y || min_ry > max_y)
-            },
+            }
             ElementKind::FreeDraw => {
-                if self.points.is_empty() { return false; }
+                if self.points.is_empty() {
+                    return false;
+                }
                 let mut min_x = self.x;
                 let mut max_x = self.x;
                 let mut min_y = self.y;
@@ -326,10 +382,18 @@ impl SceneElement {
                 for pt in &self.points {
                     let px = self.x + pt[0];
                     let py = self.y + pt[1];
-                    if px < min_x { min_x = px; }
-                    if px > max_x { max_x = px; }
-                    if py < min_y { min_y = py; }
-                    if py > max_y { max_y = py; }
+                    if px < min_x {
+                        min_x = px;
+                    }
+                    if px > max_x {
+                        max_x = px;
+                    }
+                    if py < min_y {
+                        min_y = py;
+                    }
+                    if py > max_y {
+                        max_y = py;
+                    }
                 }
                 !(max_rx < min_x || min_rx > max_x || max_ry < min_y || min_ry > max_y)
             }

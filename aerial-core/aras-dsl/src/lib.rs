@@ -43,14 +43,18 @@ style [inference_node] {
 }
 "##;
         let ast = parser::parse(source).expect("Failed to parse");
-        
+
         let output = transpiler::transpile(&ast).expect("Failed to transpile");
-        
+
         println!("AST:\n{:#?}", ast);
         println!("D2:\n{}", output.d2_source);
-        
+
         assert!(output.d2_source.contains("user -> api_gateway: HTTPS"));
         assert!(output.d2_source.contains("edge_cluster: \"Edge Cluster\""));
-        assert!(output.d2_source.contains("inference_node.style.fill: \"#6366f1\""));
+        assert!(
+            output
+                .d2_source
+                .contains("inference_node.style.fill: \"#6366f1\"")
+        );
     }
 }

@@ -35,7 +35,10 @@ fn print_stmt(stmt: &Stmt, indent: usize) -> String {
                 Arrow::Async => "-..->",
             };
             if let Some(label) = &conn.label {
-                format!("{}[{}] {} [{}]: {}", ind, conn.from.0, arrow_str, conn.to.0, label)
+                format!(
+                    "{}[{}] {} [{}]: {}",
+                    ind, conn.from.0, arrow_str, conn.to.0, label
+                )
             } else {
                 format!("{}[{}] {} [{}]", ind, conn.from.0, arrow_str, conn.to.0)
             }

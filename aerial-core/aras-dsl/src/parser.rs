@@ -1,15 +1,15 @@
 use pest::Parser;
 use pest::iterators::Pair;
 
-use crate::ast::*;
-use crate::error::ArasError;
 use crate::ArasParser;
 use crate::Rule;
+use crate::ast::*;
+use crate::error::ArasError;
 
 /// Parse a raw `.aras` source string into a [`Diagram`].
 pub fn parse(source: &str) -> Result<Diagram, ArasError> {
-    let pairs = ArasParser::parse(Rule::diagram, source)
-        .map_err(|e| ArasError::Parse(e.to_string()))?;
+    let pairs =
+        ArasParser::parse(Rule::diagram, source).map_err(|e| ArasError::Parse(e.to_string()))?;
 
     let mut meta: Vec<MetaEntry> = Vec::new();
     let mut stmts: Vec<Stmt> = Vec::new();
@@ -86,10 +86,7 @@ fn parse_stmt(pair: Pair<Rule>) -> Result<Option<Stmt>, ArasError> {
         Rule::node_decl => {
             let mut inner = pair.into_inner();
             let id = parse_node_id(inner.next().unwrap());
-            let label = inner
-                .next()
-                .map(|p| parse_value(p))
-                .unwrap_or_default();
+            let label = inner.next().map(|p| parse_value(p)).unwrap_or_default();
             Ok(Some(Stmt::NodeDecl(id, label)))
         }
 
@@ -120,7 +117,12 @@ fn parse_stmt(pair: Pair<Rule>) -> Result<Option<Stmt>, ArasError> {
                     .unwrap_or_default()
             });
 
-            Ok(Some(Stmt::Connection(Connection { from, to, arrow, label })))
+            Ok(Some(Stmt::Connection(Connection {
+                from,
+                to,
+                arrow,
+                label,
+            })))
         }
 
         Rule::group_stmt => {
@@ -136,7 +138,10 @@ fn parse_stmt(pair: Pair<Rule>) -> Result<Option<Stmt>, ArasError> {
                     }
                 }
             }
-            Ok(Some(Stmt::Group(Group { label, stmts: group_stmts })))
+            Ok(Some(Stmt::Group(Group {
+                label,
+                stmts: group_stmts,
+            })))
         }
 
         Rule::style_block => {
@@ -166,11 +171,11 @@ fn parse_stmt(pair: Pair<Rule>) -> Result<Option<Stmt>, ArasError> {
 fn parse_arrow(pair: Pair<Rule>) -> Arrow {
     let inner = pair.into_inner().next().unwrap();
     match inner.as_rule() {
-        Rule::arrow_directed   => Arrow::Directed,
-        Rule::arrow_reverse    => Arrow::Reverse,
-        Rule::arrow_bidir      => Arrow::Bidirectional,
+        Rule::arrow_directed => Arrow::Directed,
+        Rule::arrow_reverse => Arrow::Reverse,
+        Rule::arrow_bidir => Arrow::Bidirectional,
         Rule::arrow_undirected => Arrow::Undirected,
-        Rule::arrow_async      => Arrow::Async,
+        Rule::arrow_async => Arrow::Async,
         _ => Arrow::Directed,
     }
 }

@@ -4,7 +4,12 @@ pub mod svg;
 
 use aras_dsl::ast::Diagram;
 
-pub fn render_svg(diagram: &Diagram) -> (String, std::collections::HashMap<String, (f64, f64, f64, f64)>) {
+pub fn render_svg(
+    diagram: &Diagram,
+) -> (
+    String,
+    std::collections::HashMap<String, (f64, f64, f64, f64)>,
+) {
     let (mut g, _) = graph::build_graph(diagram);
     sugiyama::layout(&mut g);
     svg::generate_svg(&g)
