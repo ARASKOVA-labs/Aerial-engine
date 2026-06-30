@@ -1,0 +1,40 @@
+<!-- 
+  Aerial Logo Mark: A + L ligature
+  The left leg of the "A" doubles as the vertical stroke of the "L".
+  The crossbar of the A sits mid-height.
+  The foot of the L extends right from the base of the A's left leg.
+  Designed to match the Rephen font's elegant, thin-stroke editorial aesthetic.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Background pill (optional, for icon contexts) -->
+  
+  <!-- 
+    A+L Mark:
+    - The right diagonal of A goes from bottom-right up to the apex
+    - The left leg of A is the vertical of L, going straight down
+    - A crossbar at mid-height
+    - L foot extends right at the bottom of the vertical
+    
+    Coordinates:
+    Apex of A: (24, 6)
+    Bottom-left of A (= base of L vertical): (8, 42)
+    Bottom-right of A: (34, 42)
+    L foot extends to: (40, 42)
+    Crossbar: from (13.5, 27) to (26, 27)
+  -->
+  
+  <!-- Left leg of A = vertical of L -->
+  <line x1="8" y1="42" x2="24" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Right leg of A -->
+  <line x1="24" y1="6" x2="34" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- A crossbar -->
+  <line x1="13.5" y1="27" x2="26.5" y2="27" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+  
+  <!-- L foot (extending right from bottom of the left A leg) -->
+  <line x1="8" y1="42" x2="40" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Indigo accent dot at top-right corner of the L foot -->
+  <circle cx="40" cy="42" r="2.5" fill="#6366f1"/>
+</svg>

@@ -1,0 +1,39 @@
+WHITESPACE = _{ " " | "\t" }
+NEWLINE = _{ "\n" | "\r\n" }
+COMMENT = _{ "//" ~ (!NEWLINE ~ ANY)* }
+
+ident = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
+label_char = _{ !("\"" | NEWLINE) ~ ANY }
+quoted = ${ "\"" ~ label_char+ ~ "\"" }
+bare_value = @{ (!NEWLINE ~ !":" ~ !"," ~ !"{" ~ !"}" ~ ANY)+ }
+value = { quoted | bare_value }
+
+meta_key = @{ ASCII_ALPHA+ }
+meta_stmt = { "@" ~ meta_key ~ ":" ~ value }
+
+node_ref = { "[" ~ ident ~ "]" }
+node_decl = { node_ref ~ ":" ~ value }
+
+arrow_directed = { "-->" | "->" }
+arrow_reverse = { "<--" | "<-" }
+arrow_bidir = { "<->" }
+arrow_async = { "-..->" }
+arrow_undirected = { "--" | "-" }
+arrow = { arrow_bidir | arrow_directed | arrow_reverse | arrow_async | arrow_undirected }
+
+inline_text = { (!NEWLINE ~ !"}" ~ ANY)+ }
+conn_label = { ":" ~ inline_text }
+connection = { node_ref ~ arrow ~ node_ref ~ conn_label? }
+
+attr_key = @{ (ASCII_ALPHANUMERIC | "-")+ }
+node_attr = { node_ref ~ "." ~ attr_key ~ ":" ~ inline_text }
+
+group_inner = { (stmt ~ (NEWLINE | ";")*)* }
+group_stmt = { "group" ~ value ~ "{" ~ (NEWLINE | ";")* ~ group_inner ~ "}" }
+
+style_prop = { attr_key ~ ":" ~ inline_text }
+style_block = { "style" ~ node_ref ~ "{" ~ (NEWLINE | ";")* ~ (style_prop ~ (NEWLINE | ";")*)* ~ "}" }
+
+stmt = { meta_stmt | node_decl | node_attr | connection | group_stmt | style_block | node_ref }
+
+diagram = { SOI ~ (NEWLINE | ";")* ~ (stmt ~ (NEWLINE | ";")*)* ~ EOI }

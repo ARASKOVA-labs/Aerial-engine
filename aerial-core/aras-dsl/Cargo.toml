@@ -1,0 +1,16 @@
+[package]
+name = "aras-dsl"
+version = "0.1.0"
+edition = "2024"
+license = "AGPL-3.0-only"
+description = "ArasDiagram DSL parser — a human-friendly diagram description language. Part of the Aerial Engine open-source project."
+repository = "https://github.com/araskova-labs/aerial-engine"
+homepage = "https://araskova.com/aerial"
+keywords = ["diagram", "dsl", "parser", "flowchart", "architecture"]
+categories = ["parser-implementations", "visualization"]
+
+
+[dependencies]
+pest = "2.8.6"
+pest_derive = "2.8.6"
+serde = { version = "1.0.228", features = ["derive"] }

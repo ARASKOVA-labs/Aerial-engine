@@ -1,0 +1,11 @@
+root ::= statement (newline statement)*
+statement ::= metadata | connection | nodedef
+metadata ::= "@type: " type
+type ::= "architecture" | "flowchart"
+nodedef ::= "[" ident "]: \"" string "\""
+connection ::= "[" ident "] " arrow " [" ident "]" label?
+label ::= ": \"" string "\""
+arrow ::= "-->" | "<--" | "<->" | "--"
+ident ::= [a-zA-Z0-9_-]+
+string ::= [^"]+
+newline ::= "\n"

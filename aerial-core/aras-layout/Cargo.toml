@@ -1,0 +1,15 @@
+[package]
+name = "aras-layout"
+version = "0.1.0"
+edition = "2024"
+license = "AGPL-3.0-only"
+description = "ArasDiagram layout engine — Sugiyama-style automatic graph layout for the Aerial diagram DSL. Part of the Aerial Engine open-source project."
+repository = "https://github.com/araskova-labs/aerial-engine"
+homepage = "https://araskova.com/aerial"
+keywords = ["diagram", "layout", "graph", "sugiyama", "svg"]
+categories = ["visualization", "algorithms"]
+
+
+[dependencies]
+aras-dsl = { version = "0.1.0", path = "../aras-dsl" }
+petgraph = "0.8.3"

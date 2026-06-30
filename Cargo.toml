@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "aerial-core/aerial-engine",
+    "src-tauri"
+, "aerial-core/aras-dsl", "aerial-core/aras-layout"]
+resolver = "2"
