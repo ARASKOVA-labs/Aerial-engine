@@ -43,3 +43,6 @@ features = [
 
 [profile.release]
 opt-level = "s"   # optimize for small wasm binary size
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
