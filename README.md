@@ -24,7 +24,7 @@ Most web-based whiteboard and canvas applications hit a hard memory and garbage 
 - **`aerial-engine`**: The Rust-compiled WASM module. Exposes our strict graphics bindings (`export_delta_update`, `apply_remote_delta`, `get_local_state_vector`) that can be embedded into any TypeScript frontend.
 - **`src-tauri`**: The desktop bridge that wires the engine directly to the native OS file system.
 
-*Note: The proprietary multi-room WebSocket relay and Local AI runtime (`rustama-engine`) are not included in this open-source release.*
+
 
 ## 🚀 Getting Started
 
