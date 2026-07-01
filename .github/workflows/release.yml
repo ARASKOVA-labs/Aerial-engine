@@ -57,5 +57,5 @@ jobs:
           tagName: app-v__VERSION__ 
           releaseName: 'Aerial v__VERSION__'
           releaseBody: 'Download the installers for Windows, macOS, and Linux below.'
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
